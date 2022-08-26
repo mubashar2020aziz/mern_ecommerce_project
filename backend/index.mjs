@@ -10,6 +10,7 @@ import connection from './db/database.mjs';
 const port = process.env.PORT;
 app.use(express.json());
 connection();
+
 app.use('/', router);
 
 app.listen(port, (req, res) => {

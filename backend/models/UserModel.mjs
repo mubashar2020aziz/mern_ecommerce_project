@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import validator from 'validator';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 const Schema = mongoose.Schema;
 
@@ -20,8 +20,6 @@ const userSchema = new Schema({
   password: {
     type: String,
     required: true,
-    minlength: [8, 'password shoud be greater then 8 character'],
-    select: false,
   },
   avator: {
     public_id: {
