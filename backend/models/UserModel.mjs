@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import crypto from 'crypto-js';
+import crypto from 'crypto';
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
@@ -52,7 +52,7 @@ const userSchema = new Schema({
 
 //hash password
 userSchema.pre('save', async function (next) {
-  if (this.isModified('password')) {
+  if (!this.isModified('password')) {
     this.password = await bcrypt.hash(this.password, 12);
   }
   next();
@@ -74,6 +74,13 @@ userSchema.methods.getResetToken = async function () {
   //generating token
   const resetToken = crypto.randomBytes(20).toString('hex');
   //hashing and add resetPasswordToken to userSchema
+  this.resetPasswordToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+  this.resetPasswordTime = Date.now() + 15 * 60 * 1000;
+
+  return resetToken;
 };
 
 const User = mongoose.model('User11', userSchema);

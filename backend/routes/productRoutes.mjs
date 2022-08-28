@@ -13,6 +13,7 @@ import {
   userlogin,
   userlogout,
   userRegister,
+  forgetPassword,
 } from '../controller/UserController.mjs';
 
 const router = express.Router();
@@ -46,4 +47,5 @@ router.get('/product/:id', getSingleProduct);
 router.post('/register', userRegister);
 router.post('/login', userlogin);
 router.get('/logout', userlogout);
+router.post('/forgotpassword', forgetPassword);
 export default router;

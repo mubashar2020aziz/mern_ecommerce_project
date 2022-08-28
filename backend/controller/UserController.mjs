@@ -1,7 +1,7 @@
 import User from '../models/UserModel.mjs';
-import bcrypt from 'bcryptjs';
 import { ErrorHandler } from '../utls/ErrorHandler.mjs';
 import { sendToken } from '../utls/jwtToken.mjs';
+import { sendMail } from '../utls/sendMail.mjs';
 
 //Registeration user
 export const userRegister = async (req, res, next) => {
@@ -49,4 +49,42 @@ export const userlogout = async (req, res, next) => {
     success: true,
     message: 'logout successfully',
   });
+};
+// forgot password
+
+export const forgetPassword = async (req, res, next) => {
+  const user = await User.findOne({ email: req.body.email });
+  if (!user) {
+    return next(new ErrorHandler('user email not found', 404));
+  }
+
+  //get resetPassword token
+  const resetToken = user.getResetToken();
+  await user.save({
+    validateBeforeSave: false,
+  });
+  const resetPasswordUrl = `${req.protocol}://${req.get(
+    'host'
+  )}/password/reset/${resetToken}`;
+  const message = `your password reset token is :- \n\n ${resetPasswordUrl}`;
+
+  try {
+    await sendMail({
+      email: user.email,
+      subject: `Ecommerce Password Recover`,
+      message,
+    });
+    res.status(200).json({
+      success: true,
+      message: `Email sent to ${user.email} successfully`,
+    });
+  } catch (error) {
+    user.resetPasswordToken = undefined;
+    user.resetPasswordTime = undefined;
+
+    await user.save({
+      validateBeforeSave: false,
+    });
+    return next(new ErrorHandler(error.message));
+  }
 };
