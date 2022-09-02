@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const connection = async () => {
   const db = process.env.DATABASE;
@@ -9,5 +9,4 @@ const connection = async () => {
     console.log('data connection error');
   }
 };
-
-export default connection;
+module.exports = connection;

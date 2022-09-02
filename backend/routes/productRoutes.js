@@ -1,23 +1,25 @@
-import {
+const express = require('express');
+const router = express.Router();
+const {
   getAllProduct,
   createProduct,
   updateProduct,
   deleteProduct,
   getSingleProduct,
-} from '../controller/productController.mjs';
-import cookieParser from 'cookie-parser';
-import { isAuthenticationUser, authorizeRoles } from '../middleware/auth.mjs';
+} = require('../controller/productController');
 
-import express from 'express';
-import {
+const { isAuthenticationUser, authorizeRoles } = require('../middleware/auth');
+
+const {
   userlogin,
   userlogout,
   userRegister,
   forgetPassword,
-} from '../controller/UserController.mjs';
-
-const router = express.Router();
-
+  resetPassword,
+  userDetails,
+  updatePassword,
+} = require('../controller/UserController');
+const cookieParser = require('cookie-parser');
 //middleware
 router.use(cookieParser());
 
@@ -48,4 +50,8 @@ router.post('/register', userRegister);
 router.post('/login', userlogin);
 router.get('/logout', userlogout);
 router.post('/forgotpassword', forgetPassword);
-export default router;
+router.put('/password/reset/:token', resetPassword);
+router.put('/me/update', isAuthenticationUser, updatePassword);
+router.get('/me', isAuthenticationUser, userDetails);
+
+module.exports = router;

@@ -1,4 +1,4 @@
-export const sendToken = (user, statusCode, res) => {
+const sendToken = (user, statusCode, res) => {
   const token = user.generateAuthToken();
 
   //options for cookie
@@ -14,3 +14,4 @@ export const sendToken = (user, statusCode, res) => {
     token,
   });
 };
+module.exports = sendToken;

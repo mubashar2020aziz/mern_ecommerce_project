@@ -1,8 +1,8 @@
-import { ErrorHandler } from '../utls/ErrorHandler.mjs';
-import jwt from 'jsonwebtoken';
-import User from '../models/UserModel.mjs';
+const { ErrorHandler } = require('../utls/ErrorHandler');
+const jwt = require('jsonwebtoken');
+const User = require('../models/UserModel');
 
-export const isAuthenticationUser = async (req, res, next) => {
+exports.isAuthenticationUser = async (req, res, next) => {
   const { token } = req.cookies;
   if (!token) {
     return next(
@@ -20,7 +20,7 @@ export const isAuthenticationUser = async (req, res, next) => {
 
 //admin role
 
-export const authorizeRoles = (...roles) => {
+exports.authorizeRoles = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
       return next(

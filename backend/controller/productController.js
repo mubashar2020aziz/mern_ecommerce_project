@@ -1,8 +1,8 @@
-import Product from '../models/productModel.mjs';
-import Features from '../utls/Features.mjs';
+const Product = require('../models/productModel');
+const Features = require('../utls/Features');
 
 //create product
-export const createProduct = async (req, res, next) => {
+exports.createProduct = async (req, res, next) => {
   const product = await Product.create(req.body);
   res.status(201).json({
     success: true,
@@ -12,7 +12,7 @@ export const createProduct = async (req, res, next) => {
 
 //get All product
 
-export const getAllProduct = async (req, res) => {
+exports.getAllProduct = async (req, res) => {
   const resultPerPage = 8;
   const productCount = await Product.countDocuments();
   const feature = new Features(Product.find(), req.query)
@@ -30,7 +30,7 @@ export const getAllProduct = async (req, res) => {
 
 //update product--onlyAdmin
 
-export const updateProduct = async (req, res) => {
+exports.updateProduct = async (req, res) => {
   let product = await Product.findById(req.params.id);
   if (!product) {
     return res.status(500).json({
@@ -49,7 +49,7 @@ export const updateProduct = async (req, res) => {
   });
 };
 //delete product
-export const deleteProduct = async (req, res) => {
+exports.deleteProduct = async (req, res) => {
   const product = await Product.findById(req.params.id);
   if (!product) {
     return res.status(500).json({
@@ -65,7 +65,7 @@ export const deleteProduct = async (req, res) => {
 };
 
 // single product detail
-export const getSingleProduct = async (req, res, next) => {
+exports.getSingleProduct = async (req, res, next) => {
   const product = await Product.findById(req.params.id);
   if (!product) {
     return res.status(500).json({
