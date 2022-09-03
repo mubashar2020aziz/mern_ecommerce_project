@@ -1,4 +1,4 @@
-const { ErrorHandler } = require('../utls/ErrorHandler');
+const ErrorHandler = require('../utls/ErrorHandler');
 const jwt = require('jsonwebtoken');
 const User = require('../models/UserModel');
 

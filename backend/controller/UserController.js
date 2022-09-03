@@ -145,3 +145,76 @@ exports.updatePassword = async (req, res, next) => {
   await user.save();
   sendToken(user, 200, res);
 };
+
+// update user profile
+exports.updateProfile = async (req, res, next) => {
+  const newUserData = {
+    name: req.body.name,
+    email: req.body.email,
+  };
+  // we add cloudinary letter then we are giving condition for the avator
+  const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
+    new: true,
+    runValidators: true,
+    useFindAndModify: false,
+  });
+  res.status(200).json({
+    success: true,
+  });
+};
+
+//get all users --ByAdmin
+exports.getAllUsers = async (req, res, next) => {
+  const users = await User.find();
+
+  res.status(200).json({
+    success: true,
+    users,
+  });
+};
+
+//get single users details byAdmin
+
+exports.getSingleUser = async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+  if (!user) {
+    return next(new ErrorHandler('user is not found with this id', 400));
+  }
+
+  res.status(200).json({
+    success: true,
+    user,
+  });
+};
+
+// change user Role by admin//
+exports.updateUserRole = async (req, res, next) => {
+  const newUserData = {
+    name: req.body.name,
+    email: req.body.email,
+    role: req.body.role,
+  };
+
+  const user = await User.findByIdAndUpdate(req.params.id, newUserData, {
+    new: true,
+    runValidators: true,
+    useFindAndModify: false,
+  });
+  res.status(200).json({
+    success: true,
+  });
+};
+
+// delete user by admin//
+exports.deleteUser = async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+  if (!user) {
+    return next(new ErrorHandler('user is not found with this id', 400));
+  }
+  await user.remove();
+
+  res.status(200).json({
+    success: true,
+    message: 'user deleted successfully',
+  });
+};

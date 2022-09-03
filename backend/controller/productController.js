@@ -1,5 +1,6 @@
 const Product = require('../models/productModel');
 const Features = require('../utls/Features');
+const ErrorHandler = require('.././utls/ErrorHandler');
 
 //create product
 exports.createProduct = async (req, res, next) => {
@@ -76,4 +77,52 @@ exports.getSingleProduct = async (req, res, next) => {
   res.status(200);
   product;
   productCount;
+};
+
+// create Review and update Review //
+exports.createProductReview = async (req, res, next) => {
+  const { rating, comment, productId } = req.body;
+
+  const review = {
+    user: req.user._id,
+    name: req.user.name,
+    rating: Number(rating),
+    comment,
+  };
+  const product = await Product.findById(productId);
+  const isReviewed = product.reviews.find(
+    (rev) => rev.user.toString() === req.user._id.toString()
+  );
+
+  if (isReviewed) {
+    product.reviews.forEach((rev) => {
+      if (rev.user.toString() === req.user._id.toString())
+        (rev.rating = rating), (rev.comment = comment);
+    });
+  } else {
+    product.reviews.push(review);
+    product.numberOfReviews = product.reviews.length;
+  }
+
+  let avg = 0;
+  product.reviews.forEach((rev) => {
+    avg += rev.rating;
+  });
+  product.rating = avg / product.reviews.length;
+  await product.save({ validateBeforeSave: false });
+  res.status(200).json({
+    success: true,
+  });
+};
+
+// get all review of a single product//
+exports.getSingleProductReviews = async (req, res, next) => {
+  const product = await Product.findById(req.query.id);
+  if (!product) {
+    return next(new ErrorHandler('product is not found with this id', 404));
+  }
+  res.status(200).json({
+    success: true,
+    reviews: product.reviews,
+  });
 };

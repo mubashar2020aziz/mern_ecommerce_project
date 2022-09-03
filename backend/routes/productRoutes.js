@@ -6,6 +6,8 @@ const {
   updateProduct,
   deleteProduct,
   getSingleProduct,
+  createProductReview,
+  getSingleProductReviews,
 } = require('../controller/productController');
 
 const { isAuthenticationUser, authorizeRoles } = require('../middleware/auth');
@@ -18,6 +20,11 @@ const {
   resetPassword,
   userDetails,
   updatePassword,
+  updateProfile,
+  getAllUsers,
+  getSingleUser,
+  updateUserRole,
+  deleteUser,
 } = require('../controller/UserController');
 const cookieParser = require('cookie-parser');
 //middleware
@@ -43,6 +50,8 @@ router.delete(
   deleteProduct
 );
 router.get('/product/:id', getSingleProduct);
+router.post('/product/review', isAuthenticationUser, createProductReview);
+router.get('/reviews', getSingleProductReviews);
 
 //user parts
 
@@ -53,5 +62,30 @@ router.post('/forgotpassword', forgetPassword);
 router.put('/password/reset/:token', resetPassword);
 router.put('/me/update', isAuthenticationUser, updatePassword);
 router.get('/me', isAuthenticationUser, userDetails);
+router.put('/me/update/info', isAuthenticationUser, updateProfile);
+router.get(
+  '/admin/users',
+  isAuthenticationUser,
+  authorizeRoles('admin'),
+  getAllUsers
+);
+router.get(
+  '/admin/user/:id',
+  isAuthenticationUser,
+  authorizeRoles('admin'),
+  getSingleUser
+);
+router.put(
+  '/admin/user/:id',
+  isAuthenticationUser,
+  authorizeRoles('admin'),
+  updateUserRole
+);
+router.delete(
+  '/admin/user/:id',
+  isAuthenticationUser,
+  authorizeRoles('admin'),
+  deleteUser
+);
 
 module.exports = router;
