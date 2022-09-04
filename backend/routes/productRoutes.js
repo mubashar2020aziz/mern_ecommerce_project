@@ -32,6 +32,8 @@ const {
   createOrder,
   getSingleOrder,
   getAllOrders,
+  getAdminAllOrders,
+  updateAdminOrder,
 } = require('../controller/OrderController');
 //middleware
 router.use(cookieParser());
@@ -104,4 +106,16 @@ router.delete(
 router.post('/order/new', isAuthenticationUser, createOrder);
 router.get('/order/:id', isAuthenticationUser, getSingleOrder);
 router.get('/orders/me', isAuthenticationUser, getAllOrders);
+router.get(
+  '/admin/orders',
+  isAuthenticationUser,
+  authorizeRoles('admin'),
+  getAdminAllOrders
+);
+router.get(
+  '/admin/orders/:id',
+  isAuthenticationUser,
+  authorizeRoles('admin'),
+  updateAdminOrder
+);
 module.exports = router;
