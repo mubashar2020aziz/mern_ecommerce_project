@@ -8,6 +8,7 @@ const {
   getSingleProduct,
   createProductReview,
   getSingleProductReviews,
+  deleteReview,
 } = require('../controller/productController');
 
 const { isAuthenticationUser, authorizeRoles } = require('../middleware/auth');
@@ -27,6 +28,11 @@ const {
   deleteUser,
 } = require('../controller/UserController');
 const cookieParser = require('cookie-parser');
+const {
+  createOrder,
+  getSingleOrder,
+  getAllOrders,
+} = require('../controller/OrderController');
 //middleware
 router.use(cookieParser());
 
@@ -52,6 +58,12 @@ router.delete(
 router.get('/product/:id', getSingleProduct);
 router.post('/product/review', isAuthenticationUser, createProductReview);
 router.get('/reviews', getSingleProductReviews);
+router.delete(
+  '/reviews',
+  isAuthenticationUser,
+  authorizeRoles('admin'),
+  deleteReview
+);
 
 //user parts
 
@@ -88,4 +100,8 @@ router.delete(
   deleteUser
 );
 
+//order model//
+router.post('/order/new', isAuthenticationUser, createOrder);
+router.get('/order/:id', isAuthenticationUser, getSingleOrder);
+router.get('/orders/me', isAuthenticationUser, getAllOrders);
 module.exports = router;
